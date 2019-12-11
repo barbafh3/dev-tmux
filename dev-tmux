@@ -1,0 +1,67 @@
+#!/bin/bash
+
+
+SESSION="$1"
+LIST=("SGPV")
+USAGE="$(basename "$0") [-h or --help][-l or --list] -- creates a predefined tmux session
+
+USAGE:      dev-tmux [OPTION]... [SESSION]
+
+This script creates a new tmux session from a list of predefined sessions,
+if the name given does not have a mathching session, it creates an empty 
+session with the given name.
+
+OPTIONS:
+      -h or --help          Prints help instructions
+      -l or --list          Lists all predefined sessions 
+                            available"
+
+if [ $SESSION = "--help" ] || [ $SESSION = "-h" ]; then
+
+  echo "$USAGE"
+  exit 0
+
+fi
+
+if [ $SESSION = "--list" ] || [ $SESSION = "-l" ]; then
+
+  echo "Available sessions:"
+  echo ${LIST[*]}
+  exit 0
+fi
+
+set -- $(stty size) # $1 = rows $2 = columns
+tmux -2 new-session -d -s "$SESSION" -x "$2" -y "$(($1 - 1))" -n $SESSION # status line uses a row
+
+if [ $SESSION = "SGPV" ]; then
+
+  tmux send-keys "cd ~/MyProjects/sgpv-react" C-m
+  tmux send-keys "nvim src/components/App.jsx" C-m
+
+  tmux selectp -t 1
+
+  tmux splitw -v
+  tmux send-keys "cd ~/MyProjects/sgpv-react" C-m
+  tmux send-keys "yarn start" C-m
+
+  tmux resize-pane -D 15
+
+  tmux new-window -n "NodeJS"
+  tmux send-keys "cd ~/MyProjects/sgpv-nodejs" C-m
+  tmux send-keys "nvim src/App.ts" C-m
+
+  tmux splitw -v
+  tmux send-keys "cd ~/MyProjects/sgpv-nodejs" C-m
+  tmux send-keys "yarn dev" C-m
+
+  tmux resize-pane -D 15
+
+  tmux select-window -t 1
+  tmux selectp -t 1
+
+fi
+
+tmux attach -t $SESSION
+
+
+
