@@ -35,13 +35,13 @@ tmux -2 new-session -d -s "$SESSION" -x "$2" -y "$(($1 - 1))" -n $SESSION # stat
 
 if [ $SESSION = "SGPV" ]; then
 
-  tmux send-keys "cd ~/MyProjects/sgpv-react" C-m
-  tmux send-keys "nvim src/components/App.jsx" C-m
+  tmux send-keys "cd ~/MyProjects/sgpv-ts-react" C-m
+  tmux send-keys "nvim src/components/App.tsx" C-m
 
   tmux selectp -t 1
 
   tmux splitw -v
-  tmux send-keys "cd ~/MyProjects/sgpv-react" C-m
+  tmux send-keys "cd ~/MyProjects/sgpv-ts-react" C-m
   tmux send-keys "yarn start" C-m
 
   tmux resize-pane -D 15
@@ -58,6 +58,17 @@ if [ $SESSION = "SGPV" ]; then
 
   tmux select-window -t 1
   tmux selectp -t 1
+
+fi
+
+if [ $SESSION = "C#" ]; then
+
+  tmux send-keys "cd ~/dev/c#" C-m
+
+  tmux splitw -v
+  tmux send-keys "cd ~/dev/c#" C-m
+
+  tmux resize-pane -D 15
 
 fi
 
